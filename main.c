@@ -21,9 +21,10 @@ int main() {
 
   struct pop_entry hi;
   char headings[51];
-  int temp[4];
+  char temp[4];
+  // int temp;
   result = read(file, headings, sizeof(headings));
-  // result = read(file, temp, 4);
+  result = read(file, temp, sizeof(temp));
   if (result < 0) {
     printf("%s\n", strerror(errno));
     return -1;
@@ -32,6 +33,7 @@ int main() {
 
 
   printf("%s\n", headings);
+  printf("%s\n", temp);
 
   return 0;
 }
