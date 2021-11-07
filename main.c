@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include <errno.h>
 #include <unistd.h>
+#include <sys/stat.h>
 
 struct pop_entry {
   int year;
@@ -10,30 +11,32 @@ struct pop_entry {
   char boro[15];
 };
 
-int main() {
-  int file = open("data.txt", O_RDONLY);
+void read_file(char * name) {
+  int file = open(name, O_RDONLY);
+  struct stat stats;
+  stat(name, &stats);
+  long long size = stats.st_size;
+
+  char data[size];
   int result = 0;
 
   if (file < 0) {
     printf("%s\n", strerror(errno));
-    return -1;
+    return;
   }
 
-  struct pop_entry hi;
-  char headings[51];
-  char temp[4];
-  // int temp;
-  result = read(file, headings, sizeof(headings));
-  result = read(file, temp, sizeof(temp));
+  result = read(file, data, sizeof(data));
   if (result < 0) {
     printf("%s\n", strerror(errno));
-    return -1;
+    return;
   }
-  // hi -> year = temp;
 
 
-  printf("%s\n", headings);
-  printf("%s\n", temp);
+
+}
+
+int main() {
+  read_file("data.txt");
 
   return 0;
 }
