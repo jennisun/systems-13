@@ -67,13 +67,21 @@ void read_csv(char * name) {
       arr[index].year = hold[0];
       arr[index].population = hold[j];
       strcpy(arr[index].boro, borough[j - 1]);
-      printf("%d\t%d\t%s\n", arr[index].year, arr[index].population, arr[index].boro);
-
-
+      // printf("%d\t%d\t%s\n", arr[index].year, arr[index].population, arr[index].boro);
     }
   }
 
+  file = open("nyc_pop.data", O_CREAT | O_WRONLY, 0644);
+  if (file < 0) {
+    printf("%s\n", strerror(errno));
+    return;
+  }
 
+  result = write(file, arr, sizeof(arr));
+  if (result < 0) {
+    printf("%s\n", strerror(errno));
+    return;
+  }
 }
 
 int main() {
