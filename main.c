@@ -102,15 +102,43 @@ void read_data() {
 
   int i = 0;
   struct pop_entry hi;
-  for (i = 0; i < size / sizeof(hi); i ++) {
-    // printf("%d:\t year: %d\t boro: %s\t pop: %d\n", i, arr[i].year, arr[i].boro, arr[i].population);
+  for (i = 0; i < 10; i ++) {
+    printf("Entry %d\t\tYear: %d\tPopulation: %d\tBorough: %s\n", i, arr[i].year, arr[i].population, arr[i].boro);
+  }
+  for (int i = 10; i < size / sizeof(hi); i ++) {
     printf("Entry %d\tYear: %d\tPopulation: %d\tBorough: %s\n", i, arr[i].year, arr[i].population, arr[i].boro);
   }
 }
 
-int main() {
-  // read_csv("data.txt");
-  read_data();
+void add_data() {
+  printf("Enter year, population, and borough:\n");
+
+  struct pop_entry hi;
+  if (scanf("%d, %d, %s", &hi.year, &hi.population, hi.boro) != 3) {
+    printf("Invalid format. Enter year, population, borough\n");
+    return;
+  }
+
+  int file = open("nyc_pop.data", O_WRONLY | O_APPEND);
+  if (file < 0) {
+    printf("%s\n", strerror(errno));
+    return;
+  }
+  int result = write(file, &hi, sizeof(hi));
+  if (result < 0) {
+    printf("%s\n", strerror(errno));
+    return;
+  }
+}
+
+int main(int argc, char const *argv[]) {
+  if (argv[1] == NULL) {
+    printf("Enter -read_csv, -read_data, -add_data, or -update_data\n");
+    return 0;
+  }
+  if (strcmp(argv[1], "-read_csv") == 0) read_csv("data.txt");
+  if (strcmp(argv[1], "-read_data") == 0) read_data();
+  if (strcmp(argv[1], "-add_data") == 0) add_data();
 
   return 0;
 }
