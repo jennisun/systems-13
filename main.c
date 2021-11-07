@@ -83,6 +83,8 @@ void read_csv(char * name) {
     printf("%s\n", strerror(errno));
     return;
   }
+
+  printf("Wrote %lu bytes to nyc_pop.data\n", sizeof(arr));
 }
 
 void read_data() {
@@ -129,6 +131,8 @@ void add_data() {
     printf("%s\n", strerror(errno));
     return;
   }
+
+  printf("Appended data to file: \nYear: %d\t Borough: %s\tPopulation: %d\n", hi.year, hi.boro, hi.population);
 }
 
 void update_data() {
@@ -158,6 +162,8 @@ void update_data() {
     printf("%s\n", strerror(errno));
     return;
   }
+
+  printf("File updated\n");
 }
 
 int main(int argc, char const *argv[]) {
