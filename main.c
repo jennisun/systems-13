@@ -17,7 +17,7 @@ long long filesize(char * name) {
   return stats.st_size;
 }
 
-void read_file(char * name) {
+void read_csv(char * name) {
   int file = open(name, O_RDONLY);
   if (file < 0) {
     printf("%s\n", strerror(errno));
@@ -33,13 +33,7 @@ void read_file(char * name) {
     return;
   }
 
-  // int hold[3];
-  // printf("%s\n", data + 6);
-  // sscanf(data + 6, "%d, %d, %d", &hold[0], &hold[1], &hold[2]);
-  //
-  // printf("%d\n%d\n%d\n", hold[0], hold[1], hold[2]);
-
-  int i = 0;
+  int i, j = 0;
   int lines = -1;
   for (i = 0; i < sizeof(data); i ++) {
     if (data[i] == '\n') lines += 1;
@@ -49,8 +43,7 @@ void read_file(char * name) {
   int lineNum = 0;
   for (i = 0; i < sizeof(data); i ++) {
     if (data[i] == '\n') {
-      if (lineNum == 0) bytes[lineNum] = i;
-      else bytes[lineNum] = i - bytes[lineNum - 1];
+      bytes[lineNum] = i;
       lineNum += 1;
     }
   }
@@ -63,19 +56,28 @@ void read_file(char * name) {
   char *borough[5] = {"Manhattan", "Brooklyn", "Queens", "Bronx", "Staten Island"};
 
   for (i = 1; i < lines; i ++) {
-    char temp[bytes[i]];
+    char temp[bytes[i] - bytes[i - 1]];
     result = read(file1, temp, sizeof(temp));
 
     int hold[6];
     sscanf(temp, "%d, %d, %d, %d, %d, %d", &hold[0], &hold[1], &hold[2], &hold[3], &hold[4], &hold[5]);
-    printf("%d\t%d\t\n", hold[0], hold[1]);
+
+    for (j = 1 ; j < 6; j ++) {
+      int index = 5 * (i - 1) + j - 1;
+      arr[index].year = hold[0];
+      arr[index].population = hold[j];
+      strcpy(arr[index].boro, borough[j - 1]);
+      printf("%d\t%d\t%s\n", arr[index].year, arr[index].population, arr[index].boro);
+
+
+    }
   }
 
 
 }
 
 int main() {
-  read_file("data.txt");
+  read_csv("data.txt");
 
   return 0;
 }
