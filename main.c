@@ -111,11 +111,11 @@ void read_data() {
 }
 
 void add_data() {
-  printf("Enter year, population, and borough:\n");
+  printf("Enter year, population, and borough: ");
 
   struct pop_entry hi;
-  if (scanf("%d, %d, %s", &hi.year, &hi.population, hi.boro) != 3) {
-    printf("Invalid format. Enter year, population, borough\n");
+  if (scanf("%d %d %s", &hi.year, &hi.population, hi.boro) != 3) {
+    printf("Invalid format. Enter [year] [population] [borough]\n");
     return;
   }
 
@@ -131,6 +131,35 @@ void add_data() {
   }
 }
 
+void update_data() {
+  read_data();
+
+  struct pop_entry hi;
+  int lines = filesize("nyc_pop.data") / sizeof(hi);
+  int entry;
+
+  printf("Update entry number: ");
+  scanf("%d", &entry);
+  if (0 > entry || entry > lines) {
+    printf("Invalid entry number\n");
+    return;
+  }
+
+  printf("Enter year, population, and borough: ");
+  if (scanf("%d %d %s", &hi.year, &hi.population, hi.boro) != 3) {
+    printf("Invalid format. Enter [year] [population] [borough]\n");
+    return;
+  }
+
+  int file2 = open("nyc_pop.data", O_WRONLY, 0777);
+  lseek(file2, entry * sizeof(hi), SEEK_SET);
+  int result = write(file2, &hi, sizeof(hi));
+  if (result < 0) {
+    printf("%s\n", strerror(errno));
+    return;
+  }
+}
+
 int main(int argc, char const *argv[]) {
   if (argv[1] == NULL) {
     printf("Enter -read_csv, -read_data, -add_data, or -update_data\n");
@@ -139,6 +168,7 @@ int main(int argc, char const *argv[]) {
   if (strcmp(argv[1], "-read_csv") == 0) read_csv("data.txt");
   if (strcmp(argv[1], "-read_data") == 0) read_data();
   if (strcmp(argv[1], "-add_data") == 0) add_data();
+  if (strcmp(argv[1], "-update_data") == 0) update_data();
 
   return 0;
 }
