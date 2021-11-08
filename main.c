@@ -68,7 +68,7 @@ void read_csv(char * name) {
       arr[index].year = hold[0];
       arr[index].population = hold[j];
       strcpy(arr[index].boro, borough[j - 1]);
-      printf("%d\t%d\t%s\n", arr[index].year, arr[index].population, arr[index].boro);
+      // printf("%d\t%d\t%s\n", arr[index].year, arr[index].population, arr[index].boro);
     }
   }
 
@@ -84,6 +84,7 @@ void read_csv(char * name) {
     return;
   }
 
+  printf("Reading data file\n");
   printf("Wrote %lu bytes to nyc_pop.data\n", sizeof(arr));
 }
 
@@ -116,7 +117,9 @@ void add_data() {
   printf("Enter year, population, and borough: ");
 
   struct pop_entry hi;
-  if (scanf("%d %d %s", &hi.year, &hi.population, hi.boro) != 3) {
+  char in[100];
+  fgets(in, sizeof(in), stdin);
+  if (sscanf(in, "%d %d %s", &hi.year, &hi.population, hi.boro) != 3) {
     printf("Invalid format. Enter [year] [population] [borough]\n");
     return;
   }
@@ -143,14 +146,21 @@ void update_data() {
   int entry;
 
   printf("Update entry number: ");
-  scanf("%d", &entry);
-  if (0 > entry || entry > lines) {
+  char in[100];
+  fgets(in, sizeof(in), stdin);
+  if (sscanf(in, "%d", &entry) != 1) {
+    printf("Invalid format. Enter [entry number]\n");
+    return;
+  }
+  if (0 > entry || entry > lines - 1) {
     printf("Invalid entry number\n");
     return;
   }
 
   printf("Enter year, population, and borough: ");
-  if (scanf("%d %d %s", &hi.year, &hi.population, hi.boro) != 3) {
+  char input[100];
+  fgets(input, sizeof(in), stdin);
+  if (sscanf(input, "%d %d %s", &hi.year, &hi.population, hi.boro) != 3) {
     printf("Invalid format. Enter [year] [population] [borough]\n");
     return;
   }
@@ -171,10 +181,14 @@ int main(int argc, char const *argv[]) {
     printf("Enter -read_csv, -read_data, -add_data, or -update_data\n");
     return 0;
   }
-  if (strcmp(argv[1], "-read_csv") == 0) read_csv("data.txt");
-  if (strcmp(argv[1], "-read_data") == 0) read_data();
-  if (strcmp(argv[1], "-add_data") == 0) add_data();
-  if (strcmp(argv[1], "-update_data") == 0) update_data();
+  else if (strcmp(argv[1], "-read_csv") == 0) read_csv("data.txt");
+  else if (strcmp(argv[1], "-read_data") == 0) read_data();
+  else if (strcmp(argv[1], "-add_data") == 0) add_data();
+  else if (strcmp(argv[1], "-update_data") == 0) update_data();
+  else {
+    printf("Enter -read_csv, -read_data, -add_data, or -update_data\n");
+    return 0;
+  }
 
   return 0;
 }
